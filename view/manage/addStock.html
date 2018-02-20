@@ -1,0 +1,82 @@
+<html lang="en" ng-app="notesApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Allen">
+
+  <title>Stock</title>
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link type="text/css" href="../css/theme.css" rel="stylesheet">
+  <link type="text/css" href="../css/tablesaw.css" rel="stylesheet">
+  <link type="text/css" href="../css/AllenTable.css" rel="stylesheet">
+</head>
+
+<body ng-controller="MainCtrl as ctrl">
+  <div w3-include-html="../common/header.html"></div>
+
+  <body ng-controller="MainCtrl as ctrl">
+    <div class="container">
+      <form ng-submit="ctrl.submit()" name="myForm">
+        <h2>Stock Note</h2>
+        <table class="tablesaw col-xs-12 allenTable redTable">
+          <thead>
+            <tr>
+              <th scope="col">Stock Id</th>
+              <th scope="col">BuyDate</th>
+              <th scope="col">Costs</th>
+              <th scope="col">Number</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <input type="number" ng-model="ctrl.stock.stockId" required/>
+              </td>
+              <td><input type="date" ng-model="ctrl.stock.buyDate" required/></td>
+              <td><input type="number" step="0.01" ng-model="ctrl.stock.costs" required></td>
+              <td><input type="number" ng-model="ctrl.stock.numbers" required></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="submit" value="Submit" class="btn btn-sm btn-danger mt-3">
+                Submit
+              </button>
+      </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://www.w3schools.com/lib/w3.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="../js/const.js"></script>
+    <script type="text/javascript">
+      w3.includeHTML();
+      angular.module('notesApp', [])
+        .controller('MainCtrl', ['$http', '$scope', function($http, $scope) {
+          var self = this;
+          self.submit = function() {
+            if (confirm("Are you sure?")) {
+              //TODO change to login
+              self.stock.user = 'Allen';
+              $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+              $http({
+                  url: globaleURL + 'addStock',
+                  method: "POST",
+                  data: self.stock
+                })
+                .then(function(response) {
+                    alert("done!");
+                  },
+                  function(response) {
+                    alert("please check input data");
+                  });
+            }
+          }
+        }]);
+    </script>
+  </body>
+
+</html>

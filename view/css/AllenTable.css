@@ -1,0 +1,65 @@
+table.allenTable {
+  border-collapse: collapse;
+  border-spacing: 0;
+  border-color: #999;
+}
+
+table.allenTable thead th, table.allenTable td {
+  padding: 3px 10px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  border-style: solid;
+  word-break: normal;
+  border-color: #999;
+  overflow: hidden;
+}
+
+table.allenTable thead th {
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#006699', endColorstr='#00557F');
+  color: #FFFFFF;
+  font-weight: bold;
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 1px;
+}
+
+table.allenTable td {
+  border-width: 1px;
+  background-color: #F7FDFA;
+}
+
+table.allenTable .even td {
+  border-width: 1px;
+}
+
+.blueTable thead th {
+  background-color: #006699;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #006699), color-stop(1, #00557F));
+  background: -moz-linear-gradient(center top, #006699 5%, #00557F 100%);
+}
+
+.blueTable .even td {
+  color: #00557F;
+  background: #E1EEf4;
+}
+
+.greenTable thead th {
+  background-color: #36752D;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #36752D), color-stop(1, #275420));
+  background: -moz-linear-gradient(center top, #36752D 5%, #275420 100%);
+}
+
+.greenTable .even td {
+  color: #275420;
+  background: #DFFFDE;
+}
+
+.redTable thead th {
+  background-color: #991821;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #991821), color-stop(1, #80141C));
+  background: -moz-linear-gradient(center top, #991821 5%, #80141C 100%);
+}
+
+.redTable .even td {
+  background: #F7CDCD;
+}

@@ -1,0 +1,187 @@
+<html lang="en" ng-app="notesApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Allen">
+
+  <title>Stock</title>
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link type="text/css" href="../css/theme.css" rel="stylesheet">
+  <link type="text/css" href="../css/tablesaw.css" rel="stylesheet">
+  <link type="text/css" href="../css/AllenTable.css" rel="stylesheet">
+</head>
+
+<body ng-controller="MainCtrl as ctrl">
+  <div w3-include-html="../common/header.html"></div>
+
+  <div class="container">
+    <form ng-submit="ctrl.submit()">
+      <h2>Stock Note</h2>
+      <table class="tablesaw col-xs-12 allenTable redTable">
+        <thead>
+          <tr>
+            <th scope="col">Name (num)</th>
+            <th scope="col">Buy Date</th>
+            <th scope="col">Sell Date</th>
+            <th scope="col">Days</th>
+            <th scope="col">Costs</th>
+            <th scope="col">Sell Price</th>
+            <th scope="col">Numbers</th>
+            <th scope="col">Earning per day</th>
+            <th scope="col">Revenue</th>
+            <th scope="col">Percentage</th>
+          </tr>
+        </thead>
+        <!-- TODO add comment hover -->
+        <tbody ng-repeat="stock in stocks">
+          <tr ng-class="{even:$even}">
+            <td>
+              <b>
+                <a href="https://goodinfo.tw/StockInfo/StockDividendPolicy.asp?STOCK_ID={{stock.stockId}}">
+                <font class = "pr-2 text-primary">{{stock.stockName}}</font>({{stock.stockId}})</b>
+              </a>
+            </td>
+            <td>{{formatDate(stock.buyDate)}}</td>
+            <td>
+              <input type="date" ng-model="stock.sellDate" ng-change="updIsChange(stock)" />
+            </td>
+            <td>{{getDays(stock)}}</td>
+            <td>{{stock.costs}}</td>
+            <td>
+              <input type="text" ng-model="stock.sellPrice" ng-change="updIsChange(stock)" />
+
+            </td>
+            <td>{{stock.numbers}}</td>
+            <td ng-class="{redFont: stock.revenue > 0, greenFont: stock.revenue < 0}">
+              {{getPerDay(stock)}}</td>
+            <td ng-class="{redFont: stock.revenue > 0, greenFont: stock.revenue < 0}">
+              {{getRevenue(stock)}}
+            </td>
+            <td ng-class="{redFont: stock.revenue > 0, greenFont: stock.revenue < 0}">
+              {{getPercentage(stock)}}%</td>
+            <td class="redFont cursorPointer" ng-click="delStock(stock,$index)">
+              X
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button ng-class="getClass()" type="submit" value="Submit" class="btn btn-sm btn-danger mt-3 disabled">
+              Submit
+            </button>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://www.w3schools.com/lib/w3.js"></script>
+  <script src="../js/angular.js"></script>
+  <script src="../js/const.js"></script>
+
+
+
+  <script type="text/javascript">
+    w3.includeHTML();
+    angular.module('notesApp', [])
+      .controller('MainCtrl', ['$http', '$scope', function($http, $scope) {
+        $http.get(globaleURL + "getAll")
+          .then(function(response) {
+            $scope.stocks = response.data;
+          });
+
+        var self = this;
+        self.submit = function() {
+          let updObjects = $scope.stocks.filter(function(stock) {
+            return stock.isChange;
+          });
+          $http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
+          $http({
+              url: globaleURL + 'updStock',
+              method: "POST",
+              data: updObjects
+            })
+            .then(function(response) {
+                alert("done!");
+              },
+              function(response) {
+                alert("please check input data");
+              });
+        }
+        //TODO delete animation
+        $scope.delStock = function(stock, index) {
+          $scope.stocks.splice(index, 1);
+          if (confirm("Want to delete?")) {
+            $http({
+              url: globaleURL + 'delStock',
+              method: "GET",
+              params: {
+                id: stock._id
+              }
+            }).then(function(response) {
+                alert("done!");
+                $scope.stocks.splice(index, 1);
+              },
+              function(response) {
+                alert("please check input data");
+              });;
+          }
+        }
+
+        $scope.getClass = function() {
+          let result = ''
+          for (var index in this.stocks) {
+            if (this.stocks[index].isChange) {
+              return '';
+            }
+          }
+          return 'disabled';
+        }
+
+        $scope.updIsChange = function(stock) {
+          stock.isChange = true;
+        }
+
+        $scope.getRevenue = function(stock) {
+          let result = Math.round((stock.sellPrice - stock.costs) * (stock.numbers * 1000));
+          if (!isNaN(result)) {
+            stock.revenue = result;
+          }
+          return isNaN(result) ? '' : result;
+        };
+
+        $scope.formatDate = function(date) {
+          var dateOut = new Date(date);
+          return dateOut.getFullYear() + "-" + (parseInt(dateOut.getMonth()) + 1) + "-" + dateOut.getDate();
+        };
+
+        $scope.getDays = function(stock) {
+          let timeDiff = Math.abs(new Date(stock.buyDate).getTime() - new Date(stock.sellDate).getTime());
+          let result = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          if (!isNaN(result)) {
+            stock.days = result;
+          }
+          return isNaN(result) ? '' : result;
+        };
+        $scope.getPercentage = function(stock) {
+          let result = stock.revenue / Math.round(stock.costs * stock.numbers * 1000);
+          result = Math.round(result * 100) / 100;
+          if (!isNaN(result)) {
+            stock.percentage = result;
+          }
+          return isNaN(result) ? '' : result;
+        }
+
+        $scope.getPerDay = function(stock) {
+          let result = Math.round(stock.revenue / stock.days);
+          if (!isNaN(result)) {
+            stock.earningPerDay = result;
+          }
+          return isNaN(result) ? '' : result;
+        }
+      }]);
+  </script>
+</body>
+
+</html>

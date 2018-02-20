@@ -1,0 +1,186 @@
+<html lang="en" ng-app="notesApp">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Allen">
+
+  <title>Stock</title>
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link type="text/css" href="../css/theme.css" rel="stylesheet">
+  <link type="text/css" href="../css/tablesaw.css" rel="stylesheet">
+  <link type="text/css" href="../css/AllenTable.css" rel="stylesheet">
+</head>
+
+<body ng-controller="MainCtrl as ctrl">
+
+  <div w3-include-html="../common/header.html"></div>
+  <div class="container">
+    <div class="d-flex justify-content-between">
+      <h2>Stock Note</h2>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-addon"><i class="fa fa-search"></i></div>
+          <input type="text" class="form-control" placeholder="Search" ng-model="searchQuery">
+        </div>
+      </div>
+      <h3>
+            <font class = "text-white">Total:</font>
+            <font ng-class="{redFont: totalRevenue > 0, greenFont: totalRevenue < 0}">
+              {{totalRevenue}}
+            </font>
+        </h3>
+    </div>
+
+    <table class="tablesaw col-xs-12 allenTable redTable">
+      <thead>
+        <tr>
+          <th scope="col" ng-click="sortType = 'stockId'; sortReverse = !sortReverse" class="cursorPointer">
+            Name (num)
+            <span ng-show="sortType == 'stockId' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'stockId' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+
+          <th scope="col" ng-click="sortType = 'buyDate'; sortReverse = !sortReverse" class="cursorPointer">
+            Buy Date
+            <span ng-show="sortType == 'buyDate' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'buyDate' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+          <th scope="col" ng-click="sortType = 'sellDate'; sortReverse = !sortReverse" class="cursorPointer">
+            Sell Date
+            <span ng-show="sortType == 'sellDate' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'sellDate' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+          <th scope="col" ng-click="sortType = 'days'; sortReverse = !sortReverse" class="cursorPointer">
+            Days
+            <span ng-show="sortType == 'days' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'days' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+          <th scope="col" ng-click="sortType = 'costs'; sortReverse = !sortReverse" class="cursorPointer">
+            Costs
+            <span ng-show="sortType == 'costs' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'costs' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+          <th scope="col" ng-click="sortType = 'sellPrice'; sortReverse = !sortReverse" class="cursorPointer">
+            Sell Price
+            <span ng-show="sortType == 'sellPrice' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'sellPrice' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+          <th scope="col" ng-click="sortType = 'numbers'; sortReverse = !sortReverse" class="cursorPointer">
+            Numbers
+            <span ng-show="sortType == 'numbers' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'numbers' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+          <th scope="col" ng-click="sortType = 'earningPerDay'; sortReverse = !sortReverse" class="cursorPointer">
+            Earning per day
+            <span ng-show="sortType == 'earningPerDay' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'earningPerDay' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+          <th scope="col" ng-click="sortType = 'revenue'; sortReverse = !sortReverse" class="cursorPointer">
+            Revenue
+            <span ng-show="sortType == 'revenue' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'revenue' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+          <th scope="col" ng-click="sortType = 'percentage'; sortReverse = !sortReverse" class="cursorPointer">
+            Percentage
+            <span ng-show="sortType == 'percentage' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'percentage' && sortReverse" class="fa fa-caret-up"></span>
+          </th>
+        </tr>
+      </thead>
+      <!-- TODO add comment hover -->
+      <tbody ng-repeat="stock in stocks  | orderBy:sortType:sortReverse | filter:searchQuery">
+        <tr ng-class="{even:$even}">
+          <td>
+            <b>
+                <a href="https://goodinfo.tw/StockInfo/StockDividendPolicy.asp?STOCK_ID={{stock.stockId}}">
+                <font class = "pr-2 text-primary">{{stock.stockName}}</font>({{stock.stockId}})</b>
+            </a>
+          </td>
+          <td>{{formatDate(stock.buyDate)}}</td>
+          <td>{{stock.sellDate}}</td>
+          <td>{{getDays(stock)}}</td>
+          <td>{{stock.costs}}</td>
+          <td>{{stock.sellPrice}}</td>
+          <td>{{stock.numbers}}</td>
+          <td ng-class="{redFont: stock.revenue > 0, greenFont: stock.revenue < 0}">
+            {{getPerDay(stock)}}</td>
+          <td ng-class="{redFont: stock.revenue > 0, greenFont: stock.revenue < 0}">
+            {{getRevenue(stock)}}
+          </td>
+          <td ng-class="{redFont: stock.revenue > 0, greenFont: stock.revenue < 0}">
+            {{getPercentage(stock)}}%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://www.w3schools.com/lib/w3.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+  <script src="../js/const.js"></script>
+
+
+  <script type="text/javascript">
+    w3.includeHTML();
+    // TODO move common code to a common file
+    angular.module('notesApp', [])
+      .controller('MainCtrl', ['$http', '$scope', function($http, $scope) {
+        $http.get(globaleURL + "getAll")
+          .then(function(response) {
+            $scope.stocks = response.data;
+            $scope.totalRevenue = 0;
+            for (let i = 0; i < $scope.stocks.length; i++) {
+              if (typeof $scope.stocks[i].revenue != 'undefined') {
+                $scope.totalRevenue += $scope.stocks[i].revenue;
+              }
+            }
+          });
+
+        var self = this;
+
+        $scope.getRevenue = function(stock) {
+          let result = Math.round((stock.sellPrice - stock.costs) * (stock.numbers * 1000));
+          if (!isNaN(result)) {
+            stock.revenue = result;
+          }
+          return isNaN(result) ? '' : result;
+        };
+
+        $scope.formatDate = function(date) {
+          var dateOut = new Date(date);
+          return dateOut.getFullYear() + "-" + (parseInt(dateOut.getMonth()) + 1) + "-" + dateOut.getDate();
+        };
+
+        $scope.getDays = function(stock) {
+          let timeDiff = Math.abs(new Date(stock.buyDate).getTime() - new Date(stock.sellDate).getTime());
+          let result = Math.ceil(timeDiff / (1000 * 3600 * 24));
+          if (!isNaN(result)) {
+            stock.days = result;
+          }
+          return isNaN(result) ? '' : result;
+        };
+        $scope.getPercentage = function(stock) {
+          let result = stock.revenue / Math.round(stock.costs * stock.numbers * 1000);
+          result = Math.round(result * 100) / 100;
+          if (!isNaN(result)) {
+            stock.percentage = result;
+          }
+          return isNaN(result) ? '' : result;
+        }
+
+        $scope.getPerDay = function(stock) {
+          let result = Math.round(stock.revenue / stock.days);
+          if (!isNaN(result)) {
+            stock.earningPerDay = result;
+          }
+          return isNaN(result) ? '' : result;
+        }
+      }]);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+
+1. nodeJs -> non-blocking language
+2. callback -> when event finish and do this (a little like thread)
+3. javascript no thread
+4. NoSQL ("non relational" don't need column name) collection (table) document (row)
+5. var -> global   let -> local   const -> global && final
+6. Module: A module encapsulates related code into a single unit of code.
+When creating a module, this can be interpreted as moving all related functions into a file.
+
+7. Array.prototype.forEach() cannot return anything
+
+8. (ES6) arrow function -> An arrow function expression has a shorter syntax
+than a function expression and does not have its own this, arguments, super, or new.target.
+but arrow function cannot be named
+
+// ES5
+var multiply = function(x, y){
+  return x * y;
+}
+
+// ES6
+var multiply = (x, y) => { return x + y; };
+
+9. callback (simple) -> Callback functions are a concept derived from functional
+programming and specifies the use of functions as arguments.
+
+let x = function(){
+  console.log('i am called from inside a function')
+}
+
+let y = function(callback){
+  console.log('do something');
+  callback();
+}
+
+y(x);
+
+
+
+10. callback(a little bit difficult)
+
+let add = function(a,b){
+  return a + b;
+};
+
+let multiply = function(a,b){
+  return a * b;
+}
+
+let calc = function(num1, num2, callback){
+  return callback(num1,num2);
+}
+
+console.log(calc(2,3, add));
+
+11. express --> node js web framework
+
+12. Array.map -> transfer array to another array
+
+var  names = []
+for (var i = 0; i < animals.length; i++){
+  names.push(animals[i].name)
+}
+
+var names = animals.map(function(animal){
+  return animal.name
+})
+
+13. Array methods i.map ii.filter iii.reject iv.find v.reduce
+
+14. Array.reduce method applies a function against an accumulator
+and each element in the array (from left to right) to reduce it to a single value.
+
+var totalAmount = orders.reduce(function(sum, order){
+  return sum + order.amount
+}, 0)
+
+
+var totalAmount = 0;
+for (var i = 0; i < orders.length; i++){
+  totalAmount += orders[i].amount;
+}
+
+15. css vh vw Relative to 1% of the height of the viewport
+
+16. bootstrap Flex --> Quickly manage the layout, alignment,
+and sizing of grid columns, navigation, components,
+and more with a full suite of responsive flexbox utilities.
+
+17. bootstrap d-flex justify-content-center -> align horizon
+    bootstrap d-flex align-itmes-center -> align vertical
+    bootstrap d-flex align-self-center -> align self
+
+18. bootstrap text-white -> change text color
+
+19. bootstrap spac -> padding or margin
+
+20. bootstrap img-fluid  -> limit image in the div
+
+21. css background-attachment: fixed ->
+    A background-image that will not scroll with the page (fixed):
+
+22. bootstrap Fixed top -> Position an element at the top of the viewport,
+from edge to edge. Be sure you understand the ramifications of fixed
+position in your project.
+
+    Sticky top -> Position an element at the top of the viewport, from edge to edge,
+    but only after you scroll past it.
+
+23. bootstrap grid -> class 'row' first and then class 'col' second
+ex: <div class = "row">
+      <div class = "col-md-4">
